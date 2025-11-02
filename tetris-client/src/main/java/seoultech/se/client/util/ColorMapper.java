@@ -2,6 +2,7 @@ package seoultech.se.client.util;
 
 import javafx.scene.paint.Color;
 import seoultech.se.client.constants.UIConstants;
+import seoultech.se.client.constants.ColorBlindMode;
 
 /**
  * 색상 변환 유틸리티 클래스
@@ -56,6 +57,28 @@ public final class ColorMapper {
             case ORANGE  -> UIConstants.TETROMINO_ORANGE_CLASS;
             default      -> null;
         };
+    }
+
+    public static String toCssClass(seoultech.se.core.model.enumType.Color color, ColorBlindMode mode) {
+        String baseClass = toCssClass(color);
+
+        // if (baseClass == null || mode == null || mode == ColorBlindMode.NORMAL) {
+        //     return baseClass;
+        // }
+
+        // return baseClass.replace("tetromino-", "tetromino" + mode.getSuffix() + "-");
+
+    System.out.println("[ColorMapper] Color: " + color + ", Mode: " + mode + 
+                       ", Base: " + baseClass);
+
+    if (baseClass == null || mode == null || mode == ColorBlindMode.NORMAL) {
+        System.out.println("[ColorMapper] Returning: " + baseClass);
+        return baseClass;
+    }
+
+    String result = baseClass.replace("tetromino-", "tetromino" + mode.getSuffix() + "-");
+    System.out.println("[ColorMapper] Converted to: " + result);
+    return result;
     }
     
 
