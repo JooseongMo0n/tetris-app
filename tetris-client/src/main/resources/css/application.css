@@ -49,20 +49,26 @@
     -fx-border-radius: 0.667em;
 }
 
-.menu-button:hover {
+.menu-button:hover, .menu-button:focused {
     -fx-background-color: #4CAF50;
     -fx-cursor: hand;
 }
 
-.menu-button-middle:hover {
+.menu-button-middle:hover, .menu-button-middle:focused {
     -fx-background-color: #4CAF50;
     -fx-cursor: hand;
 }
 
-.menu-button-small:hover {
+.menu-button-small:hover, .menu-button-small:focused {
     -fx-background-color: #4CAF50;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5), 0.833em, 0, 0, 0);
+}
+
+/* ========== 설정 버튼 ========== */
+.settings-button:hover, .settings-button:focused {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 1em, 0, 0, 0);
 }
 
 /* ========== 하단 버튼 박스 ========== */

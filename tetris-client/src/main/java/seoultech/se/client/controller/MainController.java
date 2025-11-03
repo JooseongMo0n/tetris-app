@@ -8,11 +8,13 @@ import org.springframework.stereotype.Component;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import seoultech.se.backend.service.GameService;
@@ -72,21 +74,23 @@ public class MainController extends BaseController {
             startButton,
             itemStartButton,
             scoreButton,
-            endButton
+            endButton,
+            settingsButton
         };
 
+        // rootPane이 키 이벤트를 받을 수 있도록 설정
         rootPane.setFocusTraversable(true);
-        
-        // Scene이 준비된 후에 키 리스너를 설정
+        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
+
+        // Scene이 준비된 후 초기 포커스 설정
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                System.out.println("🎬 Scene ready - Setting up key listener");
-                newScene.setOnKeyPressed(this::handleKeyPressed);
-                newScene.getRoot().requestFocus();
+                Platform.runLater(() -> rootPane.requestFocus());
             }
         });
         
-        setupKeyNavigation();
+        // 초기 버튼 하이라이트
+        updateButtonHighlight();
     }
 
     /**
@@ -97,14 +101,12 @@ public class MainController extends BaseController {
         
         switch (event.getCode()) {
             case UP:
-            case W:
                 currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
                 updateButtonHighlight();
                 System.out.println("⬆️ Moved to button: " + currentButtonIndex);
                 event.consume();
                 break;
             case DOWN:
-            case S:
                 currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
                 updateButtonHighlight();
                 System.out.println("⬇️ Moved to button: " + currentButtonIndex);
@@ -124,34 +126,12 @@ public class MainController extends BaseController {
      * 현재 선택된 버튼을 시각적으로 강조
      */
     private void updateButtonHighlight() {
-        for (int i = 0; i < buttons.length; i++) {
-            if (i == currentButtonIndex) {
-                // 선택된 버튼 스타일
-                buttons[i].setStyle(
-                    "-fx-border-color: #00ffff; " +
-                    "-fx-border-width: 2; " +
-                    "-fx-background-color: #333333; " +
-                    "-fx-text-fill: white; " +
-                    "-fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 15, 0, 0, 0);"
-                );
-            } else {
-                // 기본 스타일로 복원 (CSS에서 정의한 스타일 사용)
-                buttons[i].setStyle("");
-            }
-        }
+        buttons[currentButtonIndex].requestFocus();
     }
+    
 
     private void setupKeyNavigation() {
-        // 버튼 클릭 후 포커스를 Scene root로 되돌리기
-        for (Button button : buttons) {
-            button.setFocusTraversable(true);
-            button.setOnMouseClicked(e -> {
-                javafx.scene.Scene scene = rootPane.getScene();
-                if (scene != null) {
-                    scene.getRoot().requestFocus();
-                }
-            });
-        }
+        // 이 메서드는 더 이상 필요하지 않으므로 내용을 비우거나 삭제할 수 있습니다.
     }
 
     /**
