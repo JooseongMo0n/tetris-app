@@ -93,13 +93,16 @@ public class SettingsService {
     }
 
     public void restoreDefaults() {
-        soundVolume.set(80);
-        colorMode.set("colorModeDefault");
-        screenSize.set("screenSizeM");
-        difficulty.set("difficultyNormal");
+        setSoundVolume(80);
+        setColorBlindMode(ColorBlindMode.NORMAL);
+        setScreenSize("screenSizeM");
+        setDifficulty("difficultyNormal");
         applyResolution(500, 700);
-        saveSettings();
+        // restoreDefaults 내의 각 setter가 saveSettings를 호출하므로 중복 호출 제거
+        // saveSettings(); 
     }
+
+    // ========== Property Accessors for JavaFX Binding ==========
 
     public DoubleProperty soundVolumeProperty() { 
         return soundVolume;
@@ -123,6 +126,55 @@ public class SettingsService {
 
     public StringProperty difficultyProperty() {
         return difficulty;
+    }
+
+    // ========== Standard Getters and Setters ==========
+
+    public double getSoundVolume() {
+        return soundVolume.get();
+    }
+
+    public void setSoundVolume(double volume) {
+        soundVolume.set(volume);
+        saveSettings();
+    }
+
+    public String getScreenSize() {
+        return screenSize.get();
+    }
+
+    public void setScreenSize(String size) {
+        screenSize.set(size);
+        saveSettings();
+    }
+
+    public String getDifficulty() {
+        return difficulty.get();
+    }
+
+    public void setDifficulty(String diff) {
+        difficulty.set(diff);
+        saveSettings();
+    }
+
+    public double getStageWidth() {
+        return stageWidth.get();
+    }
+
+    public void setStageWidth(double width) {
+        // applyResolution을 호출하여 프로퍼티와 실제 Stage 크기를 모두 업데이트합니다.
+        applyResolution(width, this.stageHeight.get());
+        saveSettings();
+    }
+
+    public double getStageHeight() {
+        return stageHeight.get();
+    }
+
+    public void setStageHeight(double height) {
+        // applyResolution을 호출하여 프로퍼티와 실제 Stage 크기를 모두 업데이트합니다.
+        applyResolution(this.stageWidth.get(), height);
+        saveSettings();
     }
 
     /**
@@ -150,7 +202,11 @@ public class SettingsService {
             case BLUE_YELLOW_BLIND -> "colorModeYBBlind";
             default -> "colorModeDefault";
         };
-        colorMode.set(modeString);
-        saveSettings();
+        // colorMode.set(modeString)을 직접 호출하는 대신,
+        // 일관성을 위해 내부 프로퍼티를 직접 수정합니다.
+        if (!colorMode.get().equals(modeString)) {
+            colorMode.set(modeString);
+            saveSettings();
+        }
     }
 }
